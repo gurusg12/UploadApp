@@ -44,7 +44,7 @@ const App = () => {
         id: Date.now(),
         ...docs
       };
-
+      
       setdata((p) => [...p, item]);
 
       setdocs({
