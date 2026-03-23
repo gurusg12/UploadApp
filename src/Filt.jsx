@@ -9,8 +9,7 @@ const Filt = () => {
     title: "",
     num: "",
     desc: "",
-    file: null,
-    preview: null
+    info :[]
   });
 
   // Handle input changes
@@ -23,30 +22,27 @@ const Filt = () => {
   const fileHandler = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setInputs(prev => ({
-        ...prev,
-        file,
-        preview: URL.createObjectURL(file)
+      const newfile = {file : file, preview : URL.createObjectURL(file)}
+     setInputs(prev => ({
+        ...prev , info: [...prev.info , {...newfile} ]
       }));
     }
   };
-
-  // Form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!inputs.title || !inputs.num || !inputs.desc || !inputs.preview) {
-      return alert("Please fill all fields and upload an image.");
-    }
+    // if (!inputs.title || !inputs.num || !inputs.desc || !inputs.preview) {
+    //   return alert("Please fill all fields and upload an image.");
+    // }
 
     const newItem = { ...inputs, id: Date.now() }; // Unique ID for keys
     setData([newItem, ...data]);
-    setInputs({ title: "", num: "", desc: "", file: null, preview: null });
+    setInputs({ title: "", num: "", desc: "", info : [] });
+
+    console.log(inputs)
   };
 
   // Delete item
-  const deleteItem = (id) => {
-    setData(data.filter(item => item.id !== id));
-  };
+
 
   // Filter logic (Computed directly during render for better sync)
   const filteredItems = data.filter(item =>
@@ -57,11 +53,11 @@ const Filt = () => {
 
   return (
     <div className="min-h-screen bg-[#0f172a] bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-indigo-950 to-slate-900 text-slate-200 p-4 md:p-8 font-sans">
-      
+
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-        
+
         {/* LEFT COLUMN: FORM */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full lg:w-[380px] shrink-0"
@@ -112,22 +108,8 @@ const Filt = () => {
               </div>
 
               <div className="relative group">
-                <input type="file" onChange={fileHandler} id="file-upload" className="hidden" />
-                <label 
-                  htmlFor="file-upload"
-                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-700 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-500/5 transition-all group"
-                >
-                  {inputs.preview ? (
-                    <img src={inputs.preview} className="h-full w-full object-cover rounded-2xl" alt="Preview" />
-                  ) : (
-                    <div className="flex flex-col items-center text-slate-400 group-hover:text-indigo-400">
-                      <UploadCloud className="mb-2" size={28} />
-                      <span className="text-sm">Upload Cover Image</span>
-                    </div>
-                  )}
-                </label>
+                <input type="file" multiple onChange={fileHandler} placeholder='Image' />
               </div>
-
               <button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-95">
                 Add to Gallery
               </button>
@@ -138,7 +120,7 @@ const Filt = () => {
         {/* RIGHT COLUMN: LIST */}
         <div className="flex-1 space-y-6">
           {/* SEARCH BAR */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="relative group"
@@ -166,15 +148,28 @@ const Filt = () => {
                     whileHover={{ y: -5 }}
                     className="group relative bg-slate-800/40 border border-slate-700/50 rounded-3xl overflow-hidden backdrop-blur-sm"
                   >
-                    <div className="relative h-48 w-full overflow-hidden">
+                    {/* <div className="relative h-48 w-full overflow-hidden">
+
                       <img src={item.preview} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Card" />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-                      <button 
+                      <button
                         onClick={() => deleteItem(item.id)}
                         className="absolute top-3 right-3 p-2 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white backdrop-blur-md rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300"
                       >
                         <Trash2 size={16} />
                       </button>
+                    </div> */}
+
+                    <div>
+                      {
+                        item.info.map((e, i)=>{
+                          return <div key={i}>
+                            <img src={e.preview} alt="" />
+                          </div>
+                        })
+                      }
+
+
                     </div>
 
                     <div className="p-5">
