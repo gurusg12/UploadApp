@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 const Filter = () => {
-    // const data = [{ title: "Guru", desc: "somthing", Num: 9972006054 }, { title: "mallu", desc: "somthing wennt right ", Num: 9632367397 }]
     const[items , setitems] = useState([])
     const[obj , setobj] = useState([])
     const Item = (g)=>{
