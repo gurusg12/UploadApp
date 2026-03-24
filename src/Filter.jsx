@@ -3,93 +3,43 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, UploadCloud, Trash2, PlusCircle, Image as ImageIcon } from 'lucide-react';
 
 const Filter = () => {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [inputs, setInputs] = useState({
-    title: "",
-    num: "",
-    desc: "",
-    files: [],
-  });
-
-  // Handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setInputs(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Handle file uploads (multiple)
-  const fileHandler = (e) => {
-    const files = Array.from(e.target.files);
-
-    const newFiles = files.map(file => ({
-      image: file,
-      preview: URL.createObjectURL(file),
-    }));
-
-    setInputs(prev => ({
-      ...prev,
-      files: [...prev.files, ...newFiles],
-    }));
-  };
-
-  // Form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (
-      !inputs.title ||
-      !inputs.num ||
-      !inputs.desc ||
-      inputs.files.length === 0
-    ) {
-      return alert("Please fill all fields and upload at least one image.");
+    // const data = [{ title: "Guru", desc: "somthing", Num: 9972006054 }, { title: "mallu", desc: "somthing wennt right ", Num: 9632367397 }]
+    const[items , setitems] = useState([])
+    const[obj , setobj] = useState([])
+    const Item = (g)=>{
+        const Value = g.target.value.toLowerCase().trim()
+        setobj(items.filter((G)=>(
+            G.title.toLowerCase().includes(Value) || G.desc.toLowerCase().includes(Value)
+        )))}
+const[data , setdata] = useState({title : "" , desc : "" , file : null , preview :null})
+function change (r){
+    setdata({...data , [r.target.name] : r.target.value})
+    console.log(data)
+}
+function file (h){
+    const files = h.target.files[0] 
+    setdata({...data , file : files , preview : URL.createObjectURL(files)})}
+function submit(H){
+    H.preventDefault()
+    if(data.title.length === 0|| data.file === null || data.preview === null|| data.desc.length === 0){
+        return alert("")
     }
+    setitems((d)=>([...d , {...data}]))
+    setdata({title : "" , desc : "" , file : null , preview :null})
+    console.log(data)
+    console.log(items)
+}
+    return (
+        <div className='text-slate-100 bg-slate-900 h-screen w-screen'>
+            <div className='bg-emerald-600'>
+                <form action="" onSubmit={submit}>
+                    <input type="text" placeholder='title' name='title' onChange={change} />
+                    <input type="text" placeholder='desc' name='desc' onChange={change} />
+                    <input type="file" placeholder='Files' accept='image/*' onChange={file} />
+                    <button type='submit'>submit</button>
 
-    const newItem = {
-      ...inputs,
-      id: Date.now(),
-    };
 
-    setData(prev => [newItem, ...prev]);
-
-    // Reset form
-    setInputs({
-      title: "",
-      num: "",
-      desc: "",
-      files: [],
-    });
-  };
-
-  // Delete item
-  const deleteItem = (id) => {
-    setData(prev => prev.filter(item => item.id !== id));
-  };
-
-  // Filter logic
-  const filteredItems = data.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.num.includes(searchTerm)
-  );
-
-  return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-200 p-4 md:p-8">
-
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-
-        {/* FORM */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full lg:w-[380px]"
-        >
-          <div className="bg-white/5 p-8 rounded-3xl">
-
-            <div className="flex items-center gap-3 mb-6">
-              <PlusCircle />
-              <h1 className="text-2xl font-bold">Create Entry</h1>
+                </form>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
