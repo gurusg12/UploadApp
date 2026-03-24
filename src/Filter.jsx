@@ -16,6 +16,7 @@ function change (r){
 function file (h){
     const files = h.target.files[0] 
     setdata({...data , file : files , preview : URL.createObjectURL(files)})}
+    
 function submit(H){
     H.preventDefault()
     if(data.title.length === 0|| data.file === null || data.preview === null|| data.desc.length === 0){
