@@ -8,7 +8,7 @@ import Filt from './Filt.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     {/* <App /> */}
-    {/* <Filter/> */}
-    <Filt/>
+    <Filter/>
+    {/* <Filt/> */}
   </StrictMode>,
 )
