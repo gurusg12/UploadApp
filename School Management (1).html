@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Fee Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .login-box input, .login-box select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .app-container {
+            display: none;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .company-details h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .company-details p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .logout-btn, .change-pwd-btn {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .change-pwd-btn {
+            background: #28a745;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .sidebar-menu li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu li:hover {
+            background: #f0f0f0;
+        }
+
+        .sidebar-menu li.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content button {
+            margin-right: 10px;
+        }
+
+        .modal-content button:last-child {
+            margin-right: 0;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-print {
+            background: #17a2b8;
+            padding: 8px 16px;
+        }
+
+        .fee-status-paid {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .fee-status-pending {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .report-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .register-table {
+            font-size: 12px;
+        }
+
+        .register-table th, .register-table td {
+            padding: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>🏫 School Fee Management System</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <select id="branchSelect" required>
+                    <option value="">Select Branch</option>
+                </select>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="mainApp" class="app-container">
+        <div class="top-bar">
+            <div class="company-info">
+                <div class="company-logo">🏫</div>
+                <div class="company-details">
+                    <h3 id="companyName">School Name</h3>
+                    <p id="companyAddress">Address</p>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-name" id="currentUser">User Name</div>
+                    <div class="user-role" id="currentRole">Role</div>
+                    <div class="user-role" id="currentBranch">Branch</div>
+                </div>
+                <button class="change-pwd-btn" onclick="showChangePasswordModal()">Change Password</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="active" onclick="showSection('dashboard', this)">📊 Dashboard</li>
+                <li onclick="showSection('students', this)">👨‍🎓 Student Management</li>
+                <li onclick="showSection('feeCollection', this)">💰 Fee Collection</li>
+                <li onclick="showSection('receipt', this)">🧾 Fee Receipt</li>
+                <li onclick="showSection('register', this)">📋 Fee Register</li>
+                <li onclick="showSection('reports', this)">📊 Reports</li>
+                <li onclick="showSection('branches', this)">🏢 Branch Management</li>
+                <li onclick="showSection('users', this)">👥 User Management</li>
+                <li onclick="showSection('profile', this)">🏢 Company Profile</li>
+                <li onclick="showSection('backup', this)">💾 Backup & Restore</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div id="alert" class="alert"></div>
+            
+            <div id="dashboard" class="section">
+                <h2>Dashboard</h2>
+                <div class="dashboard">
+                    <div class="card">
+                        <h3>Total Students</h3>
+                        <h2 id="totalStudents">0</h2>
+                    </div>
+                    <div class="card">
+                        <h3>Total Collection</h3>
+                        <h2 id="totalRevenue">₹0</h2>
+                    </div>
+                    <div class="card">
+                        <h3>Outstanding Fees</h3>
+                        <h2 id="pendingFees">₹0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="students" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Student Registration</h3>
+                    <form id="studentForm">
+                        <div class="form-group">
+                            <label>Student ID (Auto)</label>
+                            <input type="text" id="studentId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile</label>
+                            <input type="tel" id="studentMobile" required>
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="studentCity" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Course/Class</label>
+                            <input type="text" id="studentCourse" placeholder="e.g., 10th Standard, B.Com, etc.">
+                        </div>
+                        <button type="submit">Register Student</button>
+                    </form>
+                </div>
+                <div class="card" style="margin-top:20px;">
+                    <h3>Student List</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>City</th>
+                                    <th>Course</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feeCollection" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Collect Fee / Add Payment</h3>
+                    <form id="admissionForm">
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" id="admissionStudentId" required>
+                            <button type="button" onclick="fetchStudentForAdmission()" style="margin-top:10px;">Fetch Student Details</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Student Name</label>
+                            <input type="text" id="admissionStudentName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Course/Class</label>
+                            <input type="text" id="admissionStudentCourse" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Fee Amount</label>
+                            <input type="number" id="totalFee" required placeholder="Enter total fee amount">
+                        </div>
+                        <div class="form-group">
+                            <label>Already Paid</label>
+                            <input type="text" id="admissionAlreadyPaid" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Balance</label>
+                            <input type="text" id="admissionCurrentBalance" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount to Pay</label>
+                            <input type="number" id="admissionPaid" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="admissionMode">
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Bank Transfer</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Reference (Optional)</label>
+                            <input type="text" id="paymentReference" placeholder="Cheque/Transaction No.">
+                        </div>
+                        <div class="form-group">
+                            <label>New Balance After Payment</label>
+                            <input type="text" id="admissionBalance" readonly>
+                        </div>
+                        <button type="submit">Process Payment</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="receipt" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Generate Receipt</h3>
+                    <form id="receiptForm">
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" id="receiptStudentId" required>
+                            <button type="button" onclick="fetchStudentBalance()" style="margin-top:10px;">Fetch Details</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Student Name</label>
+                            <input type="text" id="receiptStudentName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Fee</label>
+                            <input type="text" id="receiptTotalFee" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Paid</label>
+                            <input type="text" id="receiptTotalPaid" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Previous Balance</label>
+                            <input type="text" id="prevBalance" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Paid</label>
+                            <input type="number" id="receiptAmount" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="receiptMode">
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Bank Transfer</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>New Balance</label>
+                            <input type="text" id="newBalance" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Narration</label>
+                            <textarea id="narration" rows="2" placeholder="Optional comments"></textarea>
+                        </div>
+                        <button type="submit">Generate Receipt</button>
+                        <button type="button" onclick="printReceipt()" class="btn-print" style="margin-left:10px;">🖨️ Print Receipt</button>
+                    </form>
+                    <div id="receiptOutput" style="margin-top:20px; display:none;"></div>
+                </div>
+            </div>
+
+            <div id="register" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Fee Collection Register</h3>
+                    <div class="report-filters">
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <input type="date" id="registerFromDate">
+                        </div>
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <input type="date" id="registerToDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" id="registerStudentId" placeholder="All">
+                        </div>
+                        <div class="form-group">
+                            <label>Payment Mode</label>
+                            <select id="registerMode">
+                                <option value="">All</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Bank Transfer</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="loadFeeRegister()">🔍 Load Register</button>
+                    <button onclick="exportRegister()" style="margin-left:10px;">📥 Export to CSV</button>
+                    <div style="overflow-x: auto;">
+                        <table class="register-table" id="registerTable">
+                            <thead>
+                                <tr><th>Date</th><th>Receipt No</th><th>Student ID</th><th>Student Name</th><th>Course</th><th>Amount</th><th>Mode</th><th>Reference</th><th>Balance</th></tr>
+                            </thead>
+                            <tbody id="registerBody">
+                                <tr><td colspan="9">Select filters and click Load Register</td></tr>
+                            </tbody>
+                            <tfoot id="registerFooter" style="background:#f8f9fa; font-weight:bold;"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reports" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Financial Reports</h3>
+                    <div class="report-filters">
+                        <div class="form-group">
+                            <label>Report Type</label>
+                            <select id="reportType">
+                                <option value="collection">Collection Summary</option>
+                                <option value="outstanding">Outstanding Fees</option>
+                                <option value="student-wise">Student-wise Collection (All Students)</option>
+                                <option value="mode-wise">Mode-wise Collection</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <input type="date" id="reportFromDate">
+                        </div>
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <input type="date" id="reportToDate">
+                        </div>
+                    </div>
+                    <button onclick="generateReport()">📊 Generate Report</button>
+                    <button onclick="exportReport()" style="margin-left:10px;">📥 Export Report</button>
+                    <div id="reportOutput" style="margin-top:20px;"></div>
+                </div>
+            </div>
+
+            <div id="branches" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Add New Branch</h3>
+                    <form id="branchForm">
+                        <div class="form-group">
+                            <label>Branch Name</label>
+                            <input type="text" id="branchName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch Code</label>
+                            <input type="text" id="branchCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="branchAddress" rows="2"></textarea>
+                        </div>
+                        <button type="submit">Add Branch</button>
+                    </form>
+                </div>
+                <div class="card" style="margin-top:20px;">
+                    <h3>Branch List</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead><tr><th>Code</th><th>Name</th><th>Address</th><th>Actions</th></tr></thead>
+                            <tbody id="branchList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="users" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Add New User</h3>
+                    <form id="userForm">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="userUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="userPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="userFullname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <select id="userRole">
+                                <option value="admin">Admin</option>
+                                <option value="manager">Manager</option>
+                                <option value="cashier">Cashier</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <select id="userBranch"></select>
+                        </div>
+                        <button type="submit">Add User</button>
+                    </form>
+                </div>
+                <div class="card" style="margin-top:20px;">
+                    <h3>User List</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Branch</th><th>Actions</th></tr></thead>
+                            <tbody id="userList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Company Profile</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" id="compName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="compAddress" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" id="compPhone">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="compEmail">
+                        </div>
+                        <div class="form-group">
+                            <label>GST Number</label>
+                            <input type="text" id="compGST">
+                        </div>
+                        <button type="submit">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="backup" class="section" style="display:none;">
+                <div class="card">
+                    <h3>Backup & Restore</h3>
+                    <button onclick="backupData()" style="margin-right:10px;">📥 Download Backup</button>
+                    <button onclick="document.getElementById('restoreFile').click()">📤 Restore Backup</button>
+                    <input type="file" id="restoreFile" style="display:none;" accept=".json">
+                    <div class="form-group" style="margin-top:20px;">
+                        <label>Last Backup Date</label>
+                        <input type="text" id="lastBackup" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <h3>Edit Student Details</h3>
+            <form id="editStudentForm">
+                <input type="hidden" id="editStudentId">
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input type="text" id="editDisplayId" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="editStudentName" required>
+                </div>
+                <div class="form-group">
+                    <label>Mobile</label>
+                    <input type="tel" id="editStudentMobile" required>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="editStudentCity" required>
+                </div>
+                <div class="form-group">
+                    <label>Course/Class</label>
+                    <input type="text" id="editStudentCourse">
+                </div>
+                <button type="submit">Update Student</button>
+                <button type="button" onclick="closeEditModal()" style="background:#dc3545;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="changePwdModal" class="modal">
+        <div class="modal-content">
+            <h3>Change Password</h3>
+            <form id="changePwdForm">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPwd" required>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPwd" required>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPwd" required>
+                </div>
+                <button type="submit">Change Password</button>
+                <button type="button" onclick="closeModal()" style="background:#dc3545;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let branches = JSON.parse(localStorage.getItem('branches')) || [
+            { code: 'BR001', name: 'Main Branch', address: 'City Center' }
+        ];
+        let users = JSON.parse(localStorage.getItem('users')) || [
+            { username: 'admin', password: 'admin123', fullname: 'Administrator', role: 'admin', branch: 'BR001' }
+        ];
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        let companyProfile = JSON.parse(localStorage.getItem('companyProfile')) || {
+            name: 'ABC School',
+            address: '123 Education Street, City',
+            phone: '+91 1234567890',
+            email: 'info@abcschool.com',
+            gst: '27ABCDE1234F1Z5'
+        };
+        let currentUser = null;
+        let currentReceiptHtml = '';
+
+        function saveData() {
+            localStorage.setItem('branches', JSON.stringify(branches));
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('students', JSON.stringify(students));
+            localStorage.setItem('companyProfile', JSON.stringify(companyProfile));
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => alertDiv.style.display = 'none', 3000);
+        }
+
+        function generateStudentId() {
+            const branchStudents = students.filter(s => s.branch === currentUser.branch);
+            const num = branchStudents.length + 1;
+            return `${currentUser.branch}-${num.toString().padStart(4, '0')}`;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const branchCode = document.getElementById('branchSelect').value;
+
+            const user = users.find(u => u.username === username && u.password === password && u.branch === branchCode);
+            if (user) {
+                currentUser = user;
+                const branch = branches.find(b => b.code === branchCode);
+                document.getElementById('currentUser').textContent = user.fullname;
+                document.getElementById('currentRole').textContent = user.role.toUpperCase();
+                document.getElementById('currentBranch').textContent = branch?.name || 'Unknown';
+                updateCompanyProfileDisplay();
+                updateBranchSelect();
+                loadBranchSelect();
+                loadUserList();
+                loadStudentList();
+                updateDashboard();
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                showSection('dashboard', document.querySelector('.sidebar-menu li.active'));
+            } else {
+                showAlert('Invalid credentials!', 'error');
+            }
+        });
+
+        function loadBranchSelect() {
+            const branchSelect = document.getElementById('branchSelect');
+            branchSelect.innerHTML = '<option value="">Select Branch</option>' + 
+                branches.map(b => `<option value="${b.code}">${b.name}</option>`).join('');
+        }
+
+        function updateBranchSelect() {
+            const branchSelect = document.getElementById('userBranch');
+            branchSelect.innerHTML = branches.map(b => `<option value="${b.code}">${b.name}</option>`).join('');
+        }
+
+        function updateCompanyProfileDisplay() {
+            document.getElementById('companyName').textContent = companyProfile.name;
+            document.getElementById('companyAddress').textContent = companyProfile.address;
+            document.getElementById('compName').value = companyProfile.name;
+            document.getElementById('compAddress').value = companyProfile.address;
+            document.getElementById('compPhone').value = companyProfile.phone || '';
+            document.getElementById('compEmail').value = companyProfile.email || '';
+            document.getElementById('compGST').value = companyProfile.gst || '';
+        }
+
+        function showSection(section, element) {
+            document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+            document.getElementById(section).style.display = 'block';
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            if (element) element.classList.add('active');
+            if (section === 'students') loadStudentList();
+            if (section === 'users') loadUserList();
+            if (section === 'branches') loadBranchList();
+            if (section === 'dashboard') updateDashboard();
+            if (section === 'register') setDefaultRegisterDates();
+            if (section === 'reports') setDefaultReportDates();
+        }
+
+        function setDefaultRegisterDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+            if (!document.getElementById('registerFromDate').value) {
+                document.getElementById('registerFromDate').value = firstDay;
+            }
+            if (!document.getElementById('registerToDate').value) {
+                document.getElementById('registerToDate').value = today;
+            }
+        }
+
+        function setDefaultReportDates() {
+            const today = new Date().toISOString().split('T')[0];
+            const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+            if (!document.getElementById('reportFromDate').value) {
+                document.getElementById('reportFromDate').value = firstDay;
+            }
+            if (!document.getElementById('reportToDate').value) {
+                document.getElementById('reportToDate').value = today;
+            }
+        }
+
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newStudent = {
+                studentId: generateStudentId(),
+                name: document.getElementById('studentName').value,
+                mobile: document.getElementById('studentMobile').value,
+                city: document.getElementById('studentCity').value,
+                course: document.getElementById('studentCourse').value || 'Not Specified',
+                branch: currentUser.branch,
+                totalFee: 0,
+                totalPaid: 0,
+                balance: 0,
+                payments: []
+            };
+            students.push(newStudent);
+            saveData();
+            loadStudentList();
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentId').value = generateStudentId();
+            showAlert('Student registered successfully!', 'success');
+            updateDashboard();
+        });
+
+        function loadStudentList() {
+            const branchStudents = students.filter(s => s.branch === currentUser.branch);
+            const tbody = document.getElementById('studentList');
+            if (branchStudents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No students found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = branchStudents.map(s => {
+                return `
+                    <tr>
+                        <td>${s.studentId}</td>
+                        <td>${s.name}</td>
+                        <td>${s.mobile}</td>
+                        <td>${s.city}</td>
+                        <td>${s.course}</td>
+                        <td class="action-buttons">
+                            <button class="btn-edit" onclick="editStudent('${s.studentId}')">Edit</button>
+                            <button class="btn-delete" onclick="deleteStudent('${s.studentId}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function editStudent(studentId) {
+            const student = students.find(s => s.studentId === studentId);
+            if (student) {
+                document.getElementById('editStudentId').value = student.studentId;
+                document.getElementById('editDisplayId').value = student.studentId;
+                document.getElementById('editStudentName').value = student.name;
+                document.getElementById('editStudentMobile').value = student.mobile;
+                document.getElementById('editStudentCity').value = student.city;
+                document.getElementById('editStudentCourse').value = student.course;
+                document.getElementById('editStudentModal').style.display = 'flex';
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editStudentModal').style.display = 'none';
+            document.getElementById('editStudentForm').reset();
+        }
+
+        document.getElementById('editStudentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('editStudentId').value;
+            const updatedName = document.getElementById('editStudentName').value;
+            const updatedMobile = document.getElementById('editStudentMobile').value;
+            const updatedCity = document.getElementById('editStudentCity').value;
+            const updatedCourse = document.getElementById('editStudentCourse').value;
+            
+            const studentIndex = students.findIndex(s => s.studentId === studentId);
+            if (studentIndex !== -1) {
+                students[studentIndex].name = updatedName;
+                students[studentIndex].mobile = updatedMobile;
+                students[studentIndex].city = updatedCity;
+                students[studentIndex].course = updatedCourse || 'Not Specified';
+                saveData();
+                loadStudentList();
+                closeEditModal();
+                showAlert('Student details updated successfully!', 'success');
+            } else {
+                showAlert('Student not found!', 'error');
+            }
+        });
+
+        function deleteStudent(studentId) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students = students.filter(s => s.studentId !== studentId);
+                saveData();
+                loadStudentList();
+                updateDashboard();
+                showAlert('Student deleted successfully!', 'success');
+            }
+        }
+
+        function fetchStudentForAdmission() {
+            const studentId = document.getElementById('admissionStudentId').value;
+            const student = students.find(s => s.studentId === studentId && s.branch === currentUser.branch);
+            if (student) {
+                document.getElementById('admissionStudentName').value = student.name;
+                document.getElementById('admissionStudentCourse').value = student.course;
+                document.getElementById('admissionAlreadyPaid').value = `₹${student.totalPaid.toLocaleString()}`;
+                document.getElementById('admissionCurrentBalance').value = `₹${student.balance.toLocaleString()}`;
+                document.getElementById('totalFee').value = student.totalFee === 0 ? '' : student.totalFee;
+                document.getElementById('admissionPaid').value = '';
+                document.getElementById('admissionBalance').value = '';
+                document.getElementById('paymentReference').value = '';
+            } else {
+                showAlert('Student not found!', 'error');
+            }
+        }
+
+        document.getElementById('totalFee').addEventListener('input', () => {
+            const totalFee = parseFloat(document.getElementById('totalFee').value) || 0;
+            const alreadyPaid = parseFloat(document.getElementById('admissionAlreadyPaid').value.replace(/[^0-9.-]/g, '')) || 0;
+            const currentBalance = totalFee - alreadyPaid;
+            document.getElementById('admissionCurrentBalance').value = `₹${currentBalance.toLocaleString()}`;
+        });
+
+        document.getElementById('admissionPaid').addEventListener('input', () => {
+            const currentBalance = parseFloat(document.getElementById('admissionCurrentBalance').value.replace(/[^0-9.-]/g, '')) || 0;
+            const paid = parseFloat(document.getElementById('admissionPaid').value) || 0;
+            document.getElementById('admissionBalance').value = `₹${(currentBalance - paid).toLocaleString()}`;
+        });
+
+        document.getElementById('admissionForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('admissionStudentId').value;
+            const totalFee = parseFloat(document.getElementById('totalFee').value);
+            const paid = parseFloat(document.getElementById('admissionPaid').value);
+            const mode = document.getElementById('admissionMode').value;
+            const reference = document.getElementById('paymentReference').value;
+            
+            const student = students.find(s => s.studentId === studentId && s.branch === currentUser.branch);
+            if (!student) {
+                showAlert('Student not found!', 'error');
+                return;
+            }
+            if (isNaN(totalFee) || totalFee <= 0) {
+                showAlert('Please enter total fee amount!', 'error');
+                return;
+            }
+            if (isNaN(paid) || paid <= 0) {
+                showAlert('Please enter a valid payment amount!', 'error');
+                return;
+            }
+            if (student.totalFee === 0) {
+                student.totalFee = totalFee;
+                student.balance = totalFee;
+            } else if (student.totalFee !== totalFee) {
+                showAlert('Total fee cannot be changed once set!', 'error');
+                return;
+            }
+            if (paid > student.balance) {
+                showAlert(`Amount exceeds balance! Current balance: ₹${student.balance}`, 'error');
+                return;
+            }
+            
+            student.totalPaid += paid;
+            student.balance -= paid;
+            student.payments.push({
+                date: new Date().toISOString().split('T')[0],
+                datetime: new Date().toLocaleString(),
+                amount: paid,
+                mode: mode,
+                reference: reference,
+                balanceAfter: student.balance,
+                narration: 'Fee Payment'
+            });
+            saveData();
+            showAlert(`Payment successful! Remaining balance: ₹${student.balance}`, 'success');
+            document.getElementById('admissionForm').reset();
+            document.getElementById('admissionStudentName').value = '';
+            document.getElementById('admissionStudentCourse').value = '';
+            document.getElementById('admissionAlreadyPaid').value = '';
+            document.getElementById('admissionCurrentBalance').value = '';
+            updateDashboard();
+        });
+
+        function fetchStudentBalance() {
+            const studentId = document.getElementById('receiptStudentId').value;
+            const student = students.find(s => s.studentId === studentId && s.branch === currentUser.branch);
+            if (student) {
+                document.getElementById('receiptStudentName').value = student.name;
+                document.getElementById('receiptTotalFee').value = `₹${student.totalFee.toLocaleString()}`;
+                document.getElementById('receiptTotalPaid').value = `₹${student.totalPaid.toLocaleString()}`;
+                document.getElementById('prevBalance').value = student.balance;
+                document.getElementById('receiptAmount').value = '';
+                document.getElementById('newBalance').value = '';
+            } else {
+                showAlert('Student not found!', 'error');
+            }
+        }
+
+        document.getElementById('receiptAmount').addEventListener('input', () => {
+            const prev = parseFloat(document.getElementById('prevBalance').value) || 0;
+            const amount = parseFloat(document.getElementById('receiptAmount').value) || 0;
+            document.getElementById('newBalance').value = prev - amount;
+        });
+
+        document.getElementById('receiptForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('receiptStudentId').value;
+            const amount = parseFloat(document.getElementById('receiptAmount').value);
+            const mode = document.getElementById('receiptMode').value;
+            const narration = document.getElementById('narration').value;
+            
+            const student = students.find(s => s.studentId === studentId && s.branch === currentUser.branch);
+            if (!student) {
+                showAlert('Student not found!', 'error');
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                showAlert('Please enter a valid amount!', 'error');
+                return;
+            }
+            if (amount > student.balance) {
+                showAlert(`Amount exceeds balance! Current balance: ₹${student.balance}`, 'error');
+                return;
+            }
+            
+            student.totalPaid += amount;
+            student.balance -= amount;
+            student.payments.push({
+                date: new Date().toISOString().split('T')[0],
+                datetime: new Date().toLocaleString(),
+                amount: amount,
+                mode: mode,
+                reference: '',
+                balanceAfter: student.balance,
+                narration: narration || 'Fee Payment'
+            });
+            saveData();
+            
+            const receiptNo = `RCP-${studentId}-${Date.now()}`;
+            currentReceiptHtml = `
+                <div style="border:2px solid #667eea; padding:20px; margin-top:20px;" id="printReceipt">
+                    <h3 style="text-align:center;">${companyProfile.name}</h3>
+                    <p style="text-align:center;">${companyProfile.address}</p>
+                    <p style="text-align:center;">Phone: ${companyProfile.phone} | Email: ${companyProfile.email}</p>
+                    ${companyProfile.gst ? `<p style="text-align:center;">GST: ${companyProfile.gst}</p>` : ''}
+                    <hr>
+                    <p><strong>Receipt No:</strong> ${receiptNo}</p>
+                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                    <p><strong>Student:</strong> ${student.name} (${student.studentId})</p>
+                    <p><strong>Course:</strong> ${student.course}</p>
+                    <p><strong>Total Fee:</strong> ₹${student.totalFee.toLocaleString()}</p>
+                    <p><strong>Total Paid:</strong> ₹${student.totalPaid.toLocaleString()}</p>
+                    <p><strong>Amount Paid:</strong> ₹${amount.toLocaleString()}</p>
+                    <p><strong>Mode:</strong> ${mode}</p>
+                    <p><strong>Previous Balance:</strong> ₹${(student.balance + amount).toLocaleString()}</p>
+                    <p><strong>New Balance:</strong> ₹${student.balance.toLocaleString()}</p>
+                    <p><strong>Narration:</strong> ${narration || 'Fee Payment'}</p>
+                    <hr>
+                    <p style="text-align:center;">Thank you for your payment!</p>
+                </div>
+            `;
+            
+            document.getElementById('receiptOutput').innerHTML = currentReceiptHtml;
+            document.getElementById('receiptOutput').style.display = 'block';
+            showAlert('Receipt generated successfully!', 'success');
+            document.getElementById('receiptForm').reset();
+            document.getElementById('receiptStudentName').value = '';
+            document.getElementById('receiptTotalFee').value = '';
+            document.getElementById('receiptTotalPaid').value = '';
+            document.getElementById('prevBalance').value = '';
+            document.getElementById('newBalance').value = '';
+            updateDashboard();
+        });
+
+        function printReceipt() {
+            const printContents = document.getElementById('printReceipt').innerHTML;
+            const originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
+        }
+
+        function loadFeeRegister() {
+            const fromDate = document.getElementById('registerFromDate').value;
+            const toDate = document.getElementById('registerToDate').value;
+            const studentIdFilter = document.getElementById('registerStudentId').value;
+            const modeFilter = document.getElementById('registerMode').value;
+            
+            const branchStudents = students.filter(s => s.branch === currentUser.branch);
+            let allPayments = [];
+            
+            branchStudents.forEach(student => {
+                student.payments.forEach(payment => {
+                    if (payment.date >= fromDate && payment.date <= toDate) {
+                        if ((!studentIdFilter || student.studentId.includes(studentIdFilter)) &&
+                            (!modeFilter || payment.mode === modeFilter)) {
+                            allPayments.push({
+                                date: payment.date,
+                                receiptNo: `RCP-${student.studentId}-${payment.datetime.replace(/[^0-9]/g, '').slice(0, 10)}`,
+                                studentId: student.studentId,
+                                studentName: student.name,
+                                course: student.course,
+                                amount: payment.amount,
+                                mode: payment.mode,
+                                reference: payment.reference || '-',
+                                balance: payment.balanceAfter
+                            });
+                        }
+                    }
+                });
+            });
+            
+            allPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const tbody = document.getElementById('registerBody');
+            const footer = document.getElementById('registerFooter');
+            
+            if (allPayments.length === 0) {
+                tbody.innerHTML = '|<td colspan="9">No payments found for the selected criteria</td>|';
+                footer.innerHTML = '';
+                return;
+            }
+            
+            let totalAmount = 0;
+            tbody.innerHTML = allPayments.map(p => `
+                <tr>
+                    <td>${p.date}</td>
+                    <td>${p.receiptNo}</td>
+                    <td>${p.studentId}</td>
+                    <td>${p.studentName}</td>
+                    <td>${p.course}</td>
+                    <td>₹${p.amount.toLocaleString()}</td>
+                    <td>${p.mode}</td>
+                    <td>${p.reference}</td>
+                    <td>₹${p.balance.toLocaleString()}</td>
+                 </tr>
+            `).join('');
+            
+            totalAmount = allPayments.reduce((sum, p) => sum + p.amount, 0);
+            footer.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:right;"><strong>Total:</strong></td>
+                    <td><strong>₹${totalAmount.toLocaleString()}</strong></td>
+                    <td colspan="3"></td>
+                </tr>
+            `;
+        }
+        
+        function exportRegister() {
+            const table = document.getElementById('registerTable');
+            let csv = [];
+            const rows = table.querySelectorAll('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const row = [], cols = rows[i].querySelectorAll('td, th');
+                for (let j = 0; j < cols.length; j++) {
+                    let text = cols[j].innerText;
+                    text = text.replace(/,/g, ' ');
+                    row.push(text);
+                }
+                csv.push(row.join(','));
+            }
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fee_register_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showAlert('Register exported successfully!', 'success');
+        }
+
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const fromDate = document.getElementById('reportFromDate').value;
+            const toDate = document.getElementById('reportToDate').value;
+            const branchStudents = students.filter(s => s.branch === currentUser.branch);
+            
+            let allPayments = [];
+            branchStudents.forEach(student => {
+                student.payments.forEach(payment => {
+                    if (payment.date >= fromDate && payment.date <= toDate) {
+                        allPayments.push({
+                            ...payment,
+                            studentId: student.studentId,
+                            studentName: student.name,
+                            course: student.course,
+                            mobile: student.mobile,
+                            city: student.city,
+                            totalFee: student.totalFee,
+                            totalPaid: student.totalPaid,
+                            balance: student.balance
+                        });
+                    }
+                });
+            });
+            
+            let reportHtml = '';
+            
+            if (reportType === 'collection') {
+                const totalCollection = allPayments.reduce((sum, p) => sum + p.amount, 0);
+                const modeWise = {};
+                allPayments.forEach(p => { modeWise[p.mode] = (modeWise[p.mode] || 0) + p.amount; });
+                reportHtml = `
+                    <div class="card">
+                        <h3>Collection Summary (${fromDate} to ${toDate})</h3>
+                        <p><strong>Total Collection:</strong> ₹${totalCollection.toLocaleString()}</p>
+                        <h4>Mode-wise Breakup:</h4>
+                        <table><thead><tr style="background:#667eea; color:white;"><th>Mode</th><th>Amount</th></tr></thead>
+                        <tbody>${Object.entries(modeWise).map(([mode, amount]) => `<tr><td>${mode}</td><td>₹${amount.toLocaleString()}</td></tr>`).join('')}</tbody></table>
+                    </div>
+                `;
+            } else if (reportType === 'outstanding') {
+                const outstandingStudents = branchStudents.filter(s => s.balance > 0);
+                const totalOutstanding = outstandingStudents.reduce((sum, s) => sum + s.balance, 0);
+                reportHtml = `
+                    <div class="card">
+                        <h3>Outstanding Fees Report</h3>
+                        <p><strong>Total Outstanding:</strong> ₹${totalOutstanding.toLocaleString()}</p>
+                        <p><strong>Students with Balance:</strong> ${outstandingStudents.length}</p>
+                        <table><thead><tr style="background:#667eea; color:white;"><th>ID</th><th>Name</th><th>Mobile</th><th>Course</th><th>Total Fee</th><th>Paid</th><th>Balance</th></tr></thead>
+                        <tbody>${outstandingStudents.map(s => `<tr><td>${s.studentId}</td><td>${s.name}</td><td>${s.mobile}</td><td>${s.course}</td><td>₹${s.totalFee.toLocaleString()}</td><td>₹${s.totalPaid.toLocaleString()}</td><td style="color:#dc3545;">₹${s.balance.toLocaleString()}</td></tr>`).join('')}</tbody></table>
+                    </div>
+                `;
+            } else if (reportType === 'student-wise') {
+                reportHtml = `
+                    <div class="card">
+                        <h3>Student-wise Collection Report (${fromDate} to ${toDate})</h3>
+                        <p><strong>Total Students:</strong> ${branchStudents.length}</p>
+                        <div style="overflow-x: auto;">
+                            <table style="width:100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background:#667eea; color:white;">
+                                        <th style="padding:10px;">Sl No</th>
+                                        <th style="padding:10px;">Student ID</th>
+                                        <th style="padding:10px;">Student Name</th>
+                                        <th style="padding:10px;">Mobile</th>
+                                        <th style="padding:10px;">Course</th>
+                                        <th style="padding:10px;">Total Fee</th>
+                                        <th style="padding:10px;">Total Paid</th>
+                                        <th style="padding:10px;">Balance</th>
+                                        <th style="padding:10px;">Payments in Period</th>
+                                        <th style="padding:10px;">Amount Paid in Period</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${branchStudents.map((s, index) => {
+                                        const studentPayments = allPayments.filter(p => p.studentId === s.studentId);
+                                        const totalPaidInPeriod = studentPayments.reduce((sum, p) => sum + p.amount, 0);
+                                        const paymentCount = studentPayments.length;
+                                        const paymentDetails = studentPayments.map(p => `${p.date}: ₹${p.amount.toLocaleString()} (${p.mode})`).join('<br>');
+                                        return `
+                                            <tr style="border-bottom: 1px solid #ddd;">
+                                                <td style="padding:8px;">${index + 1}</td>
+                                                <td style="padding:8px;">${s.studentId}</td>
+                                                <td style="padding:8px;"><strong>${s.name}</strong></td>
+                                                <td style="padding:8px;">${s.mobile}</td>
+                                                <td style="padding:8px;">${s.course}</td>
+                                                <td style="padding:8px;">₹${s.totalFee.toLocaleString()}</td>
+                                                <td style="padding:8px; color:#28a745;">₹${s.totalPaid.toLocaleString()}</td>
+                                                <td style="padding:8px; ${s.balance > 0 ? 'color:#dc3545; font-weight:bold;' : 'color:#28a745;'}">₹${s.balance.toLocaleString()}</td>
+                                                <td style="padding:8px;">
+                                                    ${paymentCount > 0 ? `<span style="background:#28a745; color:white; padding:2px 8px; border-radius:12px; font-size:12px;">${paymentCount} payment(s)</span><div style="font-size:11px; margin-top:5px;">${paymentDetails}</div>` : `<span style="background:#6c757d; color:white; padding:2px 8px; border-radius:12px; font-size:12px;">No payments</span>`}
+                                                </td>
+                                                <td style="padding:8px; font-weight:bold; color:#28a745;">${totalPaidInPeriod > 0 ? `₹${totalPaidInPeriod.toLocaleString()}` : '-'}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                                <tfoot style="background:#f8f9fa; font-weight:bold;">
+                                    <tr>
+                                        <td colspan="8" style="padding:10px; text-align:right;"><strong>Total Collection in Period:</strong></td>
+                                        <td style="padding:10px;"><strong>₹${allPayments.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}</strong></td>
+                                        <td style="padding:10px;"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            } else if (reportType === 'mode-wise') {
+                const modeWise = {};
+                const modeCount = {};
+                allPayments.forEach(p => {
+                    modeWise[p.mode] = (modeWise[p.mode] || 0) + p.amount;
+                    modeCount[p.mode] = (modeCount[p.mode] || 0) + 1;
+                });
+                reportHtml = `
+                    <div class="card">
+                        <h3>Mode-wise Collection Summary (${fromDate} to ${toDate})</h3>
+                        <table><thead><tr style="background:#667eea; color:white;"><th>Payment Mode</th><th>Total Amount</th><th>Transaction Count</th><th>Average Amount</th></tr></thead>
+                        <tbody>${Object.entries(modeWise).map(([mode, amount]) => `<tr><td><strong>${mode}</strong></td><td>₹${amount.toLocaleString()}</td><td>${modeCount[mode]}</td><td>₹${(amount / modeCount[mode]).toLocaleString()}</td></tr>`).join('')}</tbody>
+                        <tfoot><tr style="background:#f8f9fa;"><td><strong>Total</strong></td><td><strong>₹${allPayments.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}</strong></td><td><strong>${allPayments.length}</strong></td><td></td></tr></tfoot></table>
+                    </div>
+                `;
+            }
+            document.getElementById('reportOutput').innerHTML = reportHtml;
+        }
+        
+        function exportReport() {
+            const reportContent = document.getElementById('reportOutput').innerHTML;
+            const blob = new Blob([reportContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fee_report_${new Date().toISOString().split('T')[0]}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showAlert('Report exported successfully!', 'success');
+        }
+
+        document.getElementById('branchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newBranch = {
+                code: document.getElementById('branchCode').value,
+                name: document.getElementById('branchName').value,
+                address: document.getElementById('branchAddress').value
+            };
+            if (branches.find(b => b.code === newBranch.code)) {
+                showAlert('Branch code already exists!', 'error');
+                return;
+            }
+            branches.push(newBranch);
+            saveData();
+            loadBranchList();
+            updateBranchSelect();
+            loadBranchSelect();
+            document.getElementById('branchForm').reset();
+            showAlert('Branch added successfully!', 'success');
+        });
+
+        function loadBranchList() {
+            const tbody = document.getElementById('branchList');
+            if (branches.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">No branches found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = branches.map(b => `
+                <tr><td>${b.code}</td><td>${b.name}</td><td>${b.address}</td><td><button class="btn-delete" onclick="deleteBranch('${b.code}')">Delete</button></td></tr>
+            `).join('');
+        }
+
+        function deleteBranch(code) {
+            if (code === 'BR001') { showAlert('Cannot delete main branch!', 'error'); return; }
+            if (confirm('Delete this branch?')) {
+                branches = branches.filter(b => b.code !== code);
+                users = users.filter(u => u.branch !== code);
+                students = students.filter(s => s.branch !== code);
+                saveData();
+                loadBranchList();
+                updateBranchSelect();
+                loadBranchSelect();
+                if (currentUser.branch === code) { logout(); showAlert('Your branch was deleted.', 'success'); }
+                else showAlert('Branch deleted!', 'success');
+            }
+        }
+
+        document.getElementById('userForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUser = {
+                username: document.getElementById('userUsername').value,
+                password: document.getElementById('userPassword').value,
+                fullname: document.getElementById('userFullname').value,
+                role: document.getElementById('userRole').value,
+                branch: document.getElementById('userBranch').value
+            };
+            if (users.find(u => u.username === newUser.username)) { showAlert('Username exists!', 'error'); return; }
+            users.push(newUser);
+            saveData();
+            loadUserList();
+            document.getElementById('userForm').reset();
+            showAlert('User added!', 'success');
+        });
+
+        function loadUserList() {
+            const tbody = document.getElementById('userList');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="5">No users found</td></tr>'; return; }
+            tbody.innerHTML = users.map(u => `<tr><td>${u.username}</td><td>${u.fullname}</td><td>${u.role}</td><td>${branches.find(b => b.code === u.branch)?.name || 'Unknown'}</td><td><button class="btn-delete" onclick="deleteUser('${u.username}')">Delete</button></td></tr>`).join('');
+        }
+
+        function deleteUser(username) {
+            if (username === 'admin') { showAlert('Cannot delete admin!', 'error'); return; }
+            if (confirm('Delete user?')) { users = users.filter(u => u.username !== username); saveData(); loadUserList(); showAlert('User deleted!', 'success'); }
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            companyProfile = {
+                name: document.getElementById('compName').value,
+                address: document.getElementById('compAddress').value,
+                phone: document.getElementById('compPhone').value,
+                email: document.getElementById('compEmail').value,
+                gst: document.getElementById('compGST').value
+            };
+            saveData();
+            updateCompanyProfileDisplay();
+            showAlert('Profile updated!', 'success');
+        });
+
+        function backupData() {
+            const data = { branches, users, students, companyProfile, backupDate: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `school_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            localStorage.setItem('lastBackup', new Date().toLocaleString());
+            document.getElementById('lastBackup').value = new Date().toLocaleString();
+            showAlert('Backup created!', 'success');
+        }
+
+        document.getElementById('restoreFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    branches = data.branches || branches;
+                    users = data.users || users;
+                    students = data.students || students;
+                    companyProfile = data.companyProfile || companyProfile;
+                    saveData();
+                    loadBranchList(); updateBranchSelect(); loadBranchSelect(); loadUserList(); loadStudentList();
+                    updateCompanyProfileDisplay(); updateDashboard();
+                    showAlert('Restore successful! Reloading...', 'success');
+                    setTimeout(() => location.reload(), 2000);
+                } catch (error) { showAlert('Invalid backup file!', 'error'); }
+            };
+            reader.readAsText(file);
+        });
+
+        function showChangePasswordModal() { document.getElementById('changePwdModal').style.display = 'flex'; }
+        document.getElementById('changePwdForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (currentUser.password !== document.getElementById('currentPwd').value) { showAlert('Current password incorrect!', 'error'); return; }
+            if (document.getElementById('newPwd').value !== document.getElementById('confirmPwd').value) { showAlert('Passwords do not match!', 'error'); return; }
+            if (document.getElementById('newPwd').value.length < 4) { showAlert('Password must be 4+ characters!', 'error'); return; }
+            currentUser.password = document.getElementById('newPwd').value;
+            const userIndex = users.findIndex(u => u.username === currentUser.username);
+            if (userIndex !== -1) users[userIndex].password = currentUser.password;
+            saveData();
+            showAlert('Password changed!', 'success');
+            closeModal();
+        });
+        function closeModal() { document.getElementById('changePwdModal').style.display = 'none'; document.getElementById('changePwdForm').reset(); }
+        function logout() { currentUser = null; document.getElementById('loginPage').style.display = 'flex'; document.getElementById('mainApp').style.display = 'none'; showAlert('Logged out!', 'success'); }
+        function updateDashboard() {
+            if (!currentUser) return;
+            const branchStudents = students.filter(s => s.branch === currentUser.branch);
+            document.getElementById('totalStudents').textContent = branchStudents.length;
+            document.getElementById('totalRevenue').textContent = `₹${branchStudents.reduce((sum, s) => sum + s.totalPaid, 0).toLocaleString()}`;
+            document.getElementById('pendingFees').textContent = `₹${branchStudents.reduce((sum, s) => sum + s.balance, 0).toLocaleString()}`;
+        }
+
+        loadBranchSelect();
+        const lastBackup = localStorage.getItem('lastBackup');
+        if (lastBackup) document.getElementById('lastBackup').value = lastBackup;
+        document.getElementById('studentId').value = 'Will be auto-generated';
+    </script>
+</body>
+</html>
